@@ -1,0 +1,18 @@
+PASS complete list passes
+PASS blank or n/a headcount is flagged in plain words
+PASS missing columns flag every account
+PASS a LinkedIn cell that is not a LinkedIn company link is flagged
+PASS all four named, in order
+PASS no company column: flagged, not crashed
+PASS long lists are shortened
+PASS alternate headers work (Company / Website / Employees / LinkedIn URL / Industry)
+PASS csv file check
+PASS xlsx file check (no csv)
+PASS file not here yet: no flag
+PASS only #1 Opportunity Finder outputs are checked
+PASS a changed file is checked again
+PASS no outside service name in the rule or its messages
+PASS app flags a #1 output without headcount and industry
+PASS the case list carries the same flag
+PASS a newer version with every detail clears the flag (newest file is checked)
+17/17 passed

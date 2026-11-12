@@ -1,0 +1,22 @@
+PASS no entry point opens a new page or tab
+PASS case bar button opens the panel here
+PASS step-bar pill opens the panel here
+PASS 'All accounts' dropdown option opens the panel here
+PASS locked state kept: greyed, not clickable, note under it
+PASS panel has Back to workflow and Close, Escape closes
+PASS closing returns to the same scroll spot and control
+PASS saving filters keeps the panel open with a confirmation
+PASS panel never changes the page address
+PASS panel is a drawer on the same page
+PASS one research script reused: panel builds from window.CR.mount, no second copy
+PASS the case page loads the panel script before app.js
+PASS old /research links forward to the case screen with the panel open
+PASS app opens the panel for ?cr=CASE and cleans the address
+PASS panel never prints skipped parts as "null" (no raw replaceChildren on panel parts)
+PASS no credit amounts in the panel
+PASS provider name not in the panel or its page
+PASS /research still needs sign-in
+PASS /research answers with the forwarding page (old links keep working)
+PASS case page serves the panel script with a content hash
+PASS panel script is served
+21/21 passed

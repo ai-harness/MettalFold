@@ -1,0 +1,44 @@
+PASS only Pursue now accounts are planned for contacts
+PASS routed-accounts table: reason column decides, filler rows ignored
+PASS Keep warm account is listed as not shortlisted, never searched
+PASS domains come from the #1 target list
+PASS estimate = company lookup + list pages + contacts per company
+PASS default filters stored per case and viewable
+PASS run without approval is refused (409) and calls nothing
+PASS approve needs approved_by
+PASS approve needs a whole-number cap within the limit
+PASS approve refuses a Keep warm account
+PASS approve refused while #2 is not approved by a human
+PASS dry run (plan) spends 0 and calls nothing
+PASS bad website refused with a field message
+PASS more than 15 contacts per company refused
+PASS approval record has who, cap, time, accounts, filters id
+PASS editing filters saves them and cancels the old approval
+PASS run after a filter change is refused, nothing called
+PASS not connected: run refused and the approval stays open
+PASS approved run: one company, one contact, credits within cap (3)
+PASS only the approved Pursue now domain was touched
+PASS excluded titles (HR, Talent) are never picked
+PASS approval is single use: a second run is refused
+PASS meter stops at the cap before going over
+PASS auto = skip when web research already found enough companies
+PASS auto = run when fewer companies were found than asked
+PASS skip: approval for enrichment refused
+PASS run: only companies still missing data, inside the location filter
+PASS enrichment run within cap writes a Company enrichment file
+PASS output files exist with neutral names (csv + xlsx)
+PASS output contents and headers never name the provider
+PASS state file and audit log never name the provider
+PASS error text from the provider is neutralised
+PASS research API needs sign-in
+PASS GET /api/research/:case shows filters, plan and approvals
+PASS POST filters without the app header is blocked
+PASS POST filters saves and answers at once
+PASS bad case id refused
+PASS no approve or run endpoint in the app (approval comes from chat only)
+PASS plan endpoint is free (dry run)
+PASS served pages and scripts never name the provider
+PASS public/ folder (front-end files) has no provider name
+PASS API answers never name the provider
+PASS provider name lives only in the server-side adapter
+43/43 passed

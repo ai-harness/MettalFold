@@ -1,0 +1,24 @@
+{
+  "name": "mettalfold-local-backend",
+  "version": "1.0.0",
+  "description": "Local backend for the Mettalfold AI-Harness front end: submits requests to the six desk webhooks, tracks results from the shared sheet.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "mock-agent": "node mock-agent.js",
+    "test": "node test/run-tests.js && node test/research-tests.js && node test/details-tests.js && node test/crlock-tests.js && node test/crpanel-tests.js",
+    "test:e2e": "node test/e2e.js",
+    "test:all": "node test/run-tests.js && node test/research-tests.js && node test/details-tests.js && node test/e2e.js",
+    "research": "node tools/research.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  },
+  "optionalDependencies": {
+    "googleapis": "^144.0.0"
+  }
+}

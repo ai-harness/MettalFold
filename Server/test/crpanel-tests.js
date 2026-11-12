@@ -1,0 +1,44 @@
+'use strict';
+// v41 tests: Contact research opens as a panel inside the case screen. Static and HTTP checks; mock only, no credits.
+const fs = require('fs'), os = require('os'), path = require('path');
+process.env.QUIET = '1';
+const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'mf-crp-'));
+const results = []; let failed = 0;
+const ok = (name, cond, ev) => { results.push({ name, pass: !!cond }); if (!cond) failed++; console.log((cond ? 'PASS ' : 'FAIL ') + name + (ev ? '  -> ' + ev : '')); };
+const pub = path.join(__dirname, '..', '..', 'UI'); const rd = (n) => fs.readFileSync(path.join(pub, n), 'utf8');
+const app = rd('app.js'), rjs = rd('research.js'), rhtml = rd('research.html'), css = rd('style.css'), idx = rd('index.html');
+(async () => {
+  console.log('== front end: one screen ==');
+  ok('no entry point opens a new page or tab', !/'\/research#'/.test(app) && !/window\.open\([^)]*research/.test(app) && !/href: '\/research/.test(app));
+  ok('case bar button opens the panel here', /id: 'crlink'[^\n]*onclick: \(\) => openCR\(cc\)/.test(app));
+  ok('step-bar pill opens the panel here', /class: 'st crstep'[^\n]*onclick: \(\) => openCR\(caseId\)/.test(app));
+  ok("'All accounts' dropdown option opens the panel here", /value: '__cr'/.test(app) && /sel\.value === '__cr'\) \{ sel\.value = M\.filter \|\| ''; openCR\(r\.case_id\)/.test(app));
+  ok('locked state kept: greyed, not clickable, note under it', /crlocked/.test(app) && /CR_LOCK = 'Unlock in Introduction Desk first'/.test(app) && /\.crwrap:hover \.crtip/.test(css) && !/crlocked'[^\n]*onclick/.test(app));
+  ok('panel has Back to workflow and Close, Escape closes', /← Back to workflow/.test(rjs) && /aria-label': 'Close contact research'/.test(rjs) && /e\.key === 'Escape'/.test(rjs));
+  ok('closing returns to the same scroll spot and control', /ret = \{ x: window\.scrollX, y: window\.scrollY, el: document\.activeElement \}/.test(rjs) && /window\.scrollTo\(d\.ret\.x, d\.ret\.y\)/.test(rjs));
+  ok('saving filters keeps the panel open with a confirmation', /✓ Filters saved at/.test(rjs) && !/onClose\(\)[^\n]*Filters saved/.test(rjs));
+  ok('panel never changes the page address', !/location\.(hash|href|assign)\s*=/.test(rjs.replace(/location\.href = '\/login'/g, '')) && !/pushState/.test(rjs));
+  ok('panel is a drawer on the same page', /class: 'crdrawer'/.test(rjs) && /\.crdrawer\{position:fixed/.test(css) && /role: 'dialog'/.test(rjs));
+  ok('one research script reused: panel builds from window.CR.mount, no second copy', /window\.CR = \{ open, close, mount/.test(rjs) && !/'job_titles', 'Job titles/.test(app) && /window\.CR\.open\(c, \{ toast \}\)/.test(app));
+  ok('the case page loads the panel script before app.js', /<script src="\/research\.js\?v=[^"]*"><\/script><script src="\/app\.js/.test(idx));
+  ok('old /research links forward to the case screen with the panel open', /data-crgo/.test(rhtml) && /src="\/research\.js"/.test(rhtml) && !/<script>/.test(rhtml) && /location\.replace\([^\n]*'\/\?cr=' \+ encodeURIComponent\(h\) \+ '#case=' \+ encodeURIComponent\(h\)/.test(rjs));
+  ok('app opens the panel for ?cr=CASE and cleans the address', /new URLSearchParams\(location\.search\)\.get\('cr'\)/.test(app) && /history\.replaceState\(null, '', location\.pathname \+ location\.hash\)/.test(app) && /openCR\(c\); \}/.test(app));
+  ok('panel never prints skipped parts as "null" (no raw replaceChildren on panel parts)', /const put = \(n, \.\.\.kids\) =>/.test(rjs) && !/box(\.\w+|\[id\])\.replaceChildren\(/.test(rjs));
+  ok('no credit amounts in the panel', !/estimated_credits|credit_cap|credits_used|\.est\b|Max credits|credit each/.test(rjs));
+  ok('provider name not in the panel or its page', !/snov/i.test(rjs + rhtml + app + css + idx));
+
+  console.log('\n== HTTP ==');
+  const { createApp } = require('../server');
+  const env = { APP_PASSWORD: 'test-pass-123', SESSION_SECRET: 'z'.repeat(40), USERS: 'Rishabh,Hemant', WEBHOOK_MODE: 'mock', SHEET_MODE: 'mock', MOCK_SHEET_FILE: path.join(tmp, 'sheet.json'), LOG_DIR: path.join(tmp, 'logs'), DATA_DIR: path.join(tmp, 'data'), FILES_DIR: path.join(tmp, 'files') };
+  const ctx = createApp(env); const srv = await new Promise((res) => { const s = ctx.app.listen(0, '127.0.0.1', () => res(s)); }); const url = 'http://127.0.0.1:' + srv.address().port;
+  let cookie = ''; const req = async (m, p, body) => { const x = await fetch(url + p, { method: m, redirect: 'manual', headers: { 'Content-Type': 'application/json', ...(m !== 'GET' ? { 'X-Requested-With': 'mf' } : {}), ...(cookie ? { Cookie: cookie } : {}) }, body: body ? JSON.stringify(body) : undefined }); return { s: x.status, t: await x.text(), h: x.headers }; };
+  ok('/research still needs sign-in', (await req('GET', '/research')).s === 302);
+  const lg = await req('POST', '/api/login', { user: 'Rishabh', password: 'test-pass-123' }); cookie = (lg.h.get('set-cookie') || '').split(';')[0];
+  const rp = await req('GET', '/research'); ok('/research answers with the forwarding page (old links keep working)', rp.s === 200 && /data-crgo/.test(rp.t));
+  const home = await req('GET', '/'); ok('case page serves the panel script with a content hash', home.s === 200 && /\/research\.js\?v=[0-9a-f]{10}"/.test(home.t), (home.t.match(/research\.js\?v=[^"]*/) || [''])[0]);
+  const rs = await req('GET', '/research.js'); ok('panel script is served', rs.s === 200 && /window\.CR/.test(rs.t));
+  srv.close(); ctx.core.stop && ctx.core.stop();
+  console.log(`\n${results.length - failed}/${results.length} checks passed`);
+  fs.writeFileSync(path.join(__dirname, 'last-crpanel-run.txt'), results.map((x) => (x.pass ? 'PASS ' : 'FAIL ') + x.name).join('\n') + `\n${results.length - failed}/${results.length} passed\n`);
+  process.exit(failed ? 1 : 0);
+})().catch((e) => { console.error('TEST CRASH', e); process.exit(2); });

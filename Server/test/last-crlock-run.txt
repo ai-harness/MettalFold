@@ -1,0 +1,25 @@
+PASS a case with no steps is locked
+PASS locked before #3: only #1 approved
+PASS locked before #3: #2 waiting for approval
+PASS locked before #3: #2 rejected
+PASS locked before #3: earlier steps done, #2 still open
+PASS unlocked after #2 approved handoff (current step is #3 Introduction Desk)
+PASS unlocked after #2 approved handoff (#3 request already started)
+PASS approval read from the sheet column too (approval_state only)
+PASS stays unlocked once the case moves on to #4 Deal Desk
+PASS one case unlocking does not unlock another
+PASS credit amounts are removed from browser answers
+PASS GET a locked case says locked and shows no filters or plan
+PASS locked case: filters, enrichment and plan are refused (403, locked)
+PASS locked case: nothing was saved
+PASS case list shows which cases are locked
+PASS unlocked after #2 approved handoff: GET shows filters and accounts
+PASS unlocked answers carry no credit amounts
+PASS unlocked: plan check works and stays a free dry run
+PASS unlocked: filters can be saved
+PASS unlocking spent nothing (no runs, no approvals)
+PASS case bar: locked link is not a link and has the note under it
+PASS once unlocked: Contact research appears in the steps and in the Introduction Desk dropdown
+PASS browser and server use the same unlock rule
+PASS front end shows no credit amounts
+24/24 passed

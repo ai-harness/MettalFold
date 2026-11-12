@@ -1,0 +1,116 @@
+PASS no cookie: API gives 401
+PASS no cookie: page redirects to /login
+PASS wrong password refused
+PASS unknown user refused
+PASS login without custom header blocked (CSRF guard)
+PASS correct login works, cookie is HttpOnly + SameSite=Strict
+PASS tampered cookie refused
+PASS POST without custom header blocked when signed in
+PASS /api/me exposes no key or address
+PASS lockout after 5 wrong tries
+PASS login again after restart (separate app copy, same sheet file)
+PASS validation: missing fields give plain messages
+PASS validation: bad link refused
+PASS submit returns request_id at once
+PASS uploaded supplier is onboarded (confirmed by you), next = Product Book, no approve click needed
+PASS Product Book runs, same case, Book LIVE, file linked
+PASS Product Book desk got the human confirmation
+PASS second user (Hemant) approves the book; answer is instant
+PASS approving twice refused
+PASS audit trail shows who did what for the request
+PASS approval saved to the sheet in the background
+PASS Book Waiting: chip Book waiting, Approve anyway offered (human override), resubmit allowed
+PASS Approve on a held result asks for the override first
+PASS Approve anyway works and is logged as human override
+PASS desk said Hold for an uploaded supplier: still onboarded (human confirmation wins)
+PASS Hold supplier can start Product Book
+PASS Product Book payload maps Hold to "Onboard (confirmed by human)" and keeps the desk outcome for reference
+PASS Resubmit with identical content flagged as duplicate
+PASS Resubmit with new info accepted in the same case
+PASS Drop: chip Closed (Drop), no next step
+PASS Drop cannot start Product Book
+PASS Reject recorded with name
+PASS Rejected target list cannot go to #2
+PASS Rejected request can be resubmitted unchanged (not a duplicate)
+PASS Batch with one bad line: nothing sent, line number shown
+PASS Batch of 4 creates 4 separate requests in one case
+PASS Each batch item has its own outcome and own approval
+PASS Batch with a duplicate line: duplicate not sent, others sent (partial batch reported)
+PASS Target list ready
+PASS #2 blocked before list approved
+PASS while running, partial timeline already visible
+PASS #2 timeline: signals, Matching Desk, then Relationship Manager
+PASS #2 per-account Pursue now / Keep warm shown in summary
+PASS #3 refuses a Keep warm account
+PASS #2 desk and its helpers got the supplier confirmation (Matching Desk, Relationship Manager)
+PASS #2 timeline shows Matching Desk + Relationship Manager with their files
+PASS #2 files found by name (ranking, matching, relationship)
+PASS table viewer reads the csv
+PASS Intro packs: all Pursue now accounts in ONE request
+PASS #3 never batched (one request at a time per desk)
+PASS Deal Desk blocked: intro pack not approved
+PASS Deal Desk refused without a human-recorded soft yes
+PASS Deal outline awaiting human close; approve button reads "Mark closed by a human"
+PASS Deal outline file linked and readable
+PASS Deal Desk payload still carries the supplier confirmation and the case so far
+PASS Intro for Keep-warm/unapproved never produced a deal; case chain all in one case
+PASS double click on the same case blocked? (new case => allowed; same case => blocked)
+PASS same request in same case blocked with friendly text
+PASS "Submit anyway" works
+PASS Agent error shown in plain words with Retry
+PASS Retry makes a NEW request linked to the old, same case
+PASS retry link and count recorded in the log
+PASS retry not allowed while the first attempt is still fine
+PASS Partial result: shown as partial with explanation, still approvable
+PASS Webhook failure: request marked Problem with friendly message, in log
+PASS Retry limit: 3 retries then stop
+PASS after wait limit: "Taking longer than usual", retry offered
+PASS after timeout: "No answer"
+PASS retry of a stuck request: old marked as not answered, new one created
+PASS many cases listed, each request has case, user, agent
+PASS /api/cases/:id returns the whole chain for one case in order
+PASS both users see each other's work (same sheet)
+PASS two app copies, 8 near-simultaneous submits: every request_id unique in the sheet
+PASS UI data says sheet is down but still shows the last known cases
+PASS submit while sheet is down: refused plainly, nothing sent
+PASS approve while sheet is down: answered at once, kept as a pending write (nothing lost)
+PASS sheet back: app recovers by itself
+PASS outage and recovery are in the log
+PASS pending approval reaches the sheet once it is back
+PASS a result nobody requested is surfaced as unexpected
+PASS timeline hides score-like text and ignores extra keys
+PASS invalid timeline JSON does not crash, hidden
+PASS live format: POST, JSON, Authorization: Bearer <key> to the desk address only
+PASS key never sent to a non-Cursor address
+PASS http (not https) refused
+PASS 401 gives a friendly "rejected the key" message without the key
+PASS network error message has the key scrubbed
+PASS desk with no address/key says so, sends nothing
+PASS audit log and sheet file contain no key, password or secret
+PASS startup refuses a missing/short password
+PASS app.js not served without login
+PASS app.js served after login and has no key/password text
+PASS double click (same idem key) creates ONE request
+PASS /files: missing file gives 404 + state header, no crash
+PASS /files: path tricks refused
+PASS late file: the link starts working once the file lands (no restart)
+PASS desk workspace paths become app links (main and helper desk)
+PASS result lists every file it names (main + helper), not ready yet
+PASS /api/cases carries the same file list (for the Files panel)
+PASS once the files land, the next poll says ready (no restart, no chat needed)
+PASS and the files serve 200
+PASS archived requests are left out of the file list
+PASS free-text output_link ("Account: /workspace/..xlsx (rows for ..); ..") still becomes the file link, once
+PASS payload: request_id is the FIRST field, and also in this_request and inputs.request_id
+PASS request_id in inputs is not saved to the sheet
+PASS Excel tables open without python: all sheets, the real table first
+PASS archived case hidden from the case list
+PASS fresh install does not invent merges (merged.json not seeded)
+PASS relationship override saved app-side only
+PASS /api/health gives version + code hash (footer)
+PASS cache busting: index.html points at app.js/style.css with a content hash
+PASS v36 new-case isolation: each new supplier gets its own fresh case id
+PASS a sheet read that never answers is cut off; the app reports it and keeps polling
+PASS and recovers by itself once the sheet answers again
+PASS the real data/ folder was not touched by the tests
+115/115 passed

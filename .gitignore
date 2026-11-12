@@ -1,0 +1,11 @@
+.env
+.env.*
+!.env.example
+*.bak*
+node_modules/
+secrets/
+logs/
+data/
+files/
+*.log
+.DS_Store

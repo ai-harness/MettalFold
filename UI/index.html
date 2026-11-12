@@ -1,0 +1,7 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Mettalfold AI-Harness</title><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/style.css?v=24"></head>
+<body><header><h1>Mettalfold AI-Harness</h1><span id="modes"></span><span id="who"></span><button class="sec" id="logout">Sign out</button></header>
+<div id="gstep" class="gstep" style="display:none"></div><div id="awarn"></div><div id="banner"></div>
+<main><section><div class="card"><h2>New request</h2><div class="desks" id="desks"></div><div id="gate" class="gate"></div><form id="form"></form></div>
+<div class="card"><h2>Everything the app is doing</h2><p class="muted">Every step is listed here and saved in logs/audit.jsonl. Nothing runs unseen.</p><div class="log" id="feed"></div></div></section>
+<section><div class="card"><h2>Cases</h2><div style="display:flex;gap:8px"><select id="who-filter" style="width:150px"><option value="all">Everyone</option><option value="me">Mine only</option></select><input id="search" placeholder="Search case, supplier or account"></div><div id="cases" style="margin-top:10px"></div><div id="orphans"></div></div>
+<div class="card" id="detail" style="display:none"></div></section></main><footer id="ver" class="muted" style="text-align:center;padding:10px;font-size:12px"></footer><script src="/research.js?v=1"></script><script src="/app.js?v=33"></script></body></html>
